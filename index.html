@@ -23,7 +23,7 @@
     </form>
     <p id="chat"></p>
   </div>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <script src="js/jquery.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script>
     $(function() {
@@ -32,7 +32,7 @@
       $("form").submit(function(e) {
         e.preventDefault();
 
-        server.emit("request username", {
+        server.emit("request", {
           user_category: "client"
         });
       });

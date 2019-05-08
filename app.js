@@ -1,8 +1,10 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var server = require('http').createServer(app);
 // http server를 socket.io server로 upgrade한다
 var io = require('socket.io')(server);
 
+app.use('/js', express.static(__dirname + "/js"));
 // localhost:3000으로 서버에 접속하면 클라이언트로 index.html을 전송한다
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
@@ -43,6 +45,7 @@ var upload_data = io.of('/upload_data').on('connection', function(socket) {
         let user_id = (user_category == "client") ? user_list.indexOf(socket.id) : -10; // console : -10 , client : 0 ~ n
         upload_data.to(socket.id).emit('sending-username', {"user_id" : user_id}); // only to sender
         upload_data.to("console").emit('join-room', {"user_id" : user_id, "socket_id" : socket.id}); // update to console
+        console.log(user_id);
     })
 
     socket.on('disconnect', function(){
