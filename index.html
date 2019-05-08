@@ -27,13 +27,14 @@
   <script src="/socket.io/socket.io.js"></script>
   <script>
     $(function() {
-      var server = io('http://192.168.0.22:3000/upload_data')
+      var server = io('http://192.168.0.19:3000/upload_data')
 
       $("form").submit(function(e) {
         e.preventDefault();
 
         server.emit("request", {
-          user_category: "client"
+          user_category: "client",
+          device_name: "haha"
         });
       });
 
