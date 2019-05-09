@@ -58,8 +58,10 @@ var console_id = 0;
     })
 
     socket.on('disconnect', function(){
-        if(socket.rooms == "client") delete client_list[socket.id];
-        upload_data.to("console").emit('leave-room', {"user_id" : user_id, "socket_id" : socket.id}); // update to console
+      if(socket.rooms == "client"){
+        upload_data.to("console").emit('leave-room', {"user_id" : client_list[socket.id], "socket_id" : socket.id}); // update to console
+        delete client_list[socket.id];
+      }
     });
 
     socket.on('status-update', function(data){ //by console
