@@ -39,25 +39,27 @@ var console_id = 0;
 
     socket.on('request-username', function(data){
         if(typeof(data) == "string") data = JSON.parse(data);
-        var user_category = socket.user_category = data.user_category;
-        var device_name = socket.device_name = data.device_name;
-        if(user_category == "client"){
-            if(!sokcet.id in client_list){
-                client_list[socket.id] = (device_name in preset_device_id) ? preset_device_id[device_name] : "client_unknown_id" + unknown_id++;
+        var device_role = socket.device_role = data.device_role;
+        var device_id = socket.device_id = data.device_id;
+        if(device_role == "client"){
+            if(!(socket.id in client_list)){
+              client_list[socket.id] = (device_id in preset_device_id) ? preset_device_id[device_id] : "client_unknown_id" + client_unknown_id++;
             }
         }
         else{
-            if(!socket.id in console_list){
+            if(!(socket.id in console_list)){
                 console_list[socket.id] = "console" + console_id++;
             }
         }
-        socket.join(user_category);
-        let user_id = (user_category == "client") ? client_list[socket.id] : console_list[socket.id];
+        socket.join(device_role);
+        let user_id = (device_role == "client") ? client_list[socket.id] : console_list[socket.id];
         upload_data.to(socket.id).emit('receiving-username', {"user_id" : user_id}); // only to sender
-        if(user_category == "client") upload_data.to("console").emit('join-room', {"user_id" : user_id, "socket_id" : socket.id}); // update to console
+        console.log(user_id);
+        if(device_role == "client") upload_data.to("console").emit('join-room', {"user_id" : user_id, "socket_id" : socket.id}); // update to console
     })
 
     socket.on('disconnect', function(){
+      console.log("disconnect!!");
       if(socket.rooms == "client"){
         upload_data.to("console").emit('leave-room', {"user_id" : client_list[socket.id], "socket_id" : socket.id}); // update to console
         delete client_list[socket.id];
