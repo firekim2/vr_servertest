@@ -16,7 +16,7 @@ app.get('/sender', function(req, res) {
 
 var client_list = {}
 var console_list = {}
-var preset_device_id = {"PRESET_DEVICE_ID_1" : "client_1"}
+var preset_device_id = {"1cf91a68100d7ece" : "client_1"}
 var client_unknown_id = 0;
 var console_id = 0;
 var upload_data = io.of('/upload_data').on('connection', function(socket) {
