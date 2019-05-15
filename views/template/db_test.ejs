@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<style>
+		body 		{ padding-top:80px; }
+		.add{
+			display:none;
+			position: fixed;
+			width: 300px;
+			height: 300px;
+			border: 1px;
+			background-color: #fff;
+			transform: translate(-50%, -50%);
+			left: 50%;
+			top:50%;
+		}
+		.btn {
+			position: fixed;
+			top : 2vw;
+			right: 2vh;
+		}
+		span:hover{
+			cursor: pointer;
+		}
+	</style>
+
+</head>
+<body>
+	<div class="btn">
+		<input type="submit" value="delete" onclick="delete_btn()" />
+		<input type="submit" value="add" onclick="add_btn(null)"/>
+	</div>
+	<form action = "http://localhost:3000/db_test_delete" accept-charset="utf-8" name = "preset_device_set" method = "post">
+	 <fieldset class="item_lists">
+		 <input id="delete_btn" type = "submit" value = "delete" style="display:none;"/>
+		 <br><br>
+		 <% rows.forEach((row) => { %>
+			<input type = "checkbox" name = "_selected_action" value = "<%= row.device_name %>" class="checkbox" /> <span class="_row_data" onclick="add_btn('<%= row.device_name %>')">
+				<%= row.client_id %> - <%= row.device_name %>
+			</span><br />
+		<% }) %>
+	 </fieldset>
+ 	</form>
+	<div class="add">
+		<span>X</span>
+		<form action = "http://localhost:3000/db_test" accept-charset="utf-8" name = "preset_device_set" method = "post">
+		 <fieldset>
+			 <input type = "submit" value = "add"/>
+			 <br><br>
+			 	<p>client id : </p><input type = "text" name="_client_id" />
+				<p>device name : </p><input type = "text" name="_device_name" />
+		 </fieldset>
+		</form>
+	</div>
+	<script>
+		const delete_btn = () => {
+			var checked_box = document.querySelectorAll("input.checkbox:checked");
+			if(checked_box.length) document.querySelector("#delete_btn").click();
+		}
+
+		const add_btn = (device_name) => {
+			var add_div = document.querySelector(".add");
+			add_div.querySelectorAll('input[type="text"]').forEach((input) => {
+				input.value = "";
+				input.removeAttribute('readonly');
+			})
+			if(device_name){
+				var input_device_name = add_div.querySelector('input[name="_device_name"]');
+				add_div.querySelector('form').setAttribute('action', add_div.querySelector('form').getAttribute('action') + '_update')
+				input_device_name.value = device_name;
+				input_device_name.setAttribute('readonly','');
+			}
+			else add_div.querySelector('form').setAttribute('action', add_div.querySelector('form').getAttribute('action') + '_add')
+			add_div.style.display = "block";
+			add_div.querySelector('span').onclick = () => {
+				add_div.style.display = "none";
+			}
+		}
+	</script>
+</body>
+</html>
