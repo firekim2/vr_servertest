@@ -31,7 +31,7 @@
 		<input type="submit" value="delete" onclick="delete_btn()" />
 		<input type="submit" value="add" onclick="add_btn(null)"/>
 	</div>
-	<form action = "http://localhost:3000/db_test_delete" accept-charset="utf-8" name = "preset_device_set" method = "post">
+	<form action = "http://<%= host_url %>/db_test_delete" accept-charset="utf-8" name = "preset_device_set" method = "post">
 	 <fieldset class="item_lists">
 		 <input id="delete_btn" type = "submit" value = "delete" style="display:none;"/>
 		 <br><br>
@@ -44,7 +44,7 @@
  	</form>
 	<div class="add">
 		<span>X</span>
-		<form action = "http://localhost:3000/db_test" accept-charset="utf-8" name = "preset_device_set" method = "post">
+		<form action = "http://<%= host_url %>/db_test" accept-charset="utf-8" name = "preset_device_set" method = "post">
 		 <fieldset>
 			 <input type = "submit" value = "add"/>
 			 <br><br>

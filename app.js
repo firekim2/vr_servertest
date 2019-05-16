@@ -23,7 +23,7 @@ app.get('/sender', function(req, res) {
 
 app.get('/db_test', function(req, res) {
     db_query.read_all(db).then((rows) => {
-        res.render('template/db_test', {rows : rows});
+        res.render('template/db_test', {rows : rows, host_url:"192.168.0.19:3000"});
     }).catch((err) => {
         console.error(err);
     });
@@ -96,6 +96,7 @@ var upload_data = io.of('/upload_data').on('connection', function(socket) {
             }
         }
         else{
+          console.log(socket.id);
             if(!(socket.id in console_list)){
                 console_list[socket.id] = socket.user_id = "console" + console_id++;
                 upload_data.to(socket.id).emit('receiving-username', {"user_id" : socket.user_id}); // only to sender
@@ -109,6 +110,9 @@ var upload_data = io.of('/upload_data').on('connection', function(socket) {
       if(socket.device_role == "client"){
         upload_data.to("console").emit('leave-room', {"user_id" : socket.user_id, "socket_id" : socket.id}); // update to console
         delete client_list[socket.id];
+      }
+      else {
+        delete console_list[socket.id];
       }
     });
 

@@ -27,17 +27,14 @@
   <script src="/socket.io/socket.io.js"></script>
   <script>
     $(function() {
-      var server = io('http://localhost:3000/upload_data')
+      var server = io('http://192.168.0.19:3000/upload_data')
 
       $("form").submit(function(e) {
         e.preventDefault();
         server.emit("request-username",{
-          device_role: "client",
+          device_role: "console",
           device_id: "device_name_sample1"
       });
-        server.emit("client-to-console", {
-          message: "client"
-        });
       });
 
       server.on("console-to-client", function(data) {
