@@ -27,7 +27,7 @@
   <script src="/socket.io/socket.io.js"></script>
   <script>
     $(function() {
-      var server = io('http://192.168.0.17:3000/upload_data')
+      var server = io('http://<%= host_url %>/upload_data')
 
       $("form").submit(function(e) {
         e.preventDefault();
@@ -40,6 +40,10 @@
       server.on("console-to-client", function(data) {
         $("#chat").text(data);
       });
+
+      server.on("client-list", function(data) {
+          console.log(data);
+      })
     });
   </script>
 </body>

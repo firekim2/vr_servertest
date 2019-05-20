@@ -8,13 +8,15 @@ var body_parser = require('body-parser');
 const db_query = require('./db_set');
 
 let db = new sqlite.Database("./preset_device_id.sqlite3");
+//var host_url = "192.168.0.17:3000";
+var host_url = "localhost:3000";
 
 app.set('view engine', 'ejs');
 app.use('/js', express.static(__dirname + "/js"));
 app.use(body_parser.urlencoded({ extended : false }));
 // localhost:3000으로 서버에 접속하면 클라이언트로 index.html을 전송한다
 app.get('/', function(req, res) {
-  res.sendFile(__dirname + '/index.html');
+    res.render('template/index', {host_url: host_url});
 });
 
 app.get('/sender', function(req, res) {
@@ -23,7 +25,7 @@ app.get('/sender', function(req, res) {
 
 app.get('/db_test', function(req, res) {
     db_query.read_all(db).then((rows) => {
-        res.render('template/db_test', {rows : rows, host_url:"192.168.0.19:3000"});
+        res.render('template/db_test', {rows : rows, host_url: host_url});
     }).catch((err) => {
         console.error(err);
     });
@@ -60,7 +62,6 @@ app.post('/db_test_delete', (req, res) => {
 var client_list = {}
 var console_list = {}
 var console_list = {}
-var preset_device_id = {"1cf91a68100d7ece" : "client_1"}
 var client_unknown_id = 0;
 var console_id = 0;
 var upload_data = io.of('/upload_data').on('connection', function(socket) {
@@ -100,6 +101,14 @@ var upload_data = io.of('/upload_data').on('connection', function(socket) {
             if(!(socket.id in console_list)){
                 console_list[socket.id] = socket.user_id = "console" + console_id++;
                 upload_data.to(socket.id).emit('receiving-username', {"user_id" : socket.user_id}); // only to sender
+                db_query.read_all(db).then((rows) => {
+                    rows.forEach((row) => {
+                        var client_list_keys = Object.values(client_list);
+                        row.is_connected = (row.client_id in client_list_keys) ? true : false;
+                        console.log(row);
+                    });
+                    upload_data.to(socket.id).emit('client-list', {"rows" : rows});
+                });
                 console.log("and user_id is named as : " + socket.user_id);
             }
         }
